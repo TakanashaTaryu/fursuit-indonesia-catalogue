@@ -84,7 +84,7 @@ export default function Home() {
   const [showAnalytics, setShowAnalytics] = useState(true);
   const sliderRef = useRef<HTMLDivElement>(null);
   const sliderInstanceRef = useRef<NoUiSliderAPI | null>(null);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 60000000]);
 
   // Initialize noUiSlider
   useEffect(() => {
@@ -96,9 +96,9 @@ export default function Home() {
     }
 
     const slider = noUiSlider.create(sliderRef.current, {
-      start: [0, 50000000],
+      start: [0, 60000000],
       connect: true,
-      range: { min: 0, max: 50000000 },
+      range: { min: 0, max: 60000000 },
       step: 500000,
       tooltips: [
         { to: (v: number) => formatCurrency(Math.round(v)) },
@@ -587,7 +587,7 @@ export default function Home() {
               {/* Call to action */}
               <div className="md:ml-auto flex flex-col items-center md:items-end w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t border-gray-800 md:border-t-0">
                 <div className="text-[10px] text-gray-400 font-mono mb-2 text-center md:text-right">
-                  Apakah Kamu Maker Fursuit? Hubungi developer kami untuk<br className="hidden md:block" />
+                  Apakah Kamu Fursuit Maker? Hubungi developer kami untuk<br className="hidden md:block" />
                   menambahkan katalog Anda ke web ini:
                 </div>
                 <div className="flex items-center gap-2">
