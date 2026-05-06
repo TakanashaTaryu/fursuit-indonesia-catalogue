@@ -1,0 +1,877 @@
+
+# Generate the complete single-file HTML application
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURSUIT MAKER DATABASE // OSINT MONITOR</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- noUiSlider CSS & JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=VT323&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'mono': ['"Fira Code"', '"Courier New"', 'monospace'],
+                        'terminal': ['"VT323"', 'monospace'],
+                    },
+                    colors: {
+                        'neon-green': '#00ff41',
+                        'neon-red': '#ff073a',
+                        'neon-yellow': '#f0f000',
+                        'neon-cyan': '#00f0ff',
+                        'dark-bg': '#0a0a0f',
+                        'panel-bg': '#111118',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Pulsing Dot Animation */
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 4px currentColor; }
+            50% { opacity: 0.5; transform: scale(0.8); box-shadow: 0 0 12px currentColor; }
+        }
+        
+        .pulse-dot {
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        
+        .pulse-dot-fast {
+            animation: pulse-dot 1s ease-in-out infinite;
+        }
+        
+        /* Scanline Effect */
+        .scanlines::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 50;
+        }
+        
+        /* Terminal Blink */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .cursor-blink {
+            animation: blink 1s step-end infinite;
+        }
+        
+        /* Grid Lines */
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        /* noUiSlider Customization */
+        .noUi-connect {
+            background: #00f0ff !important;
+        }
+        .noUi-horizontal {
+            height: 4px;
+            border: none;
+            background: #1a1a2e;
+        }
+        .noUi-handle {
+            background: #00f0ff !important;
+            border: none !important;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5) !important;
+            width: 14px !important;
+            height: 14px !important;
+            border-radius: 50% !important;
+            right: -7px !important;
+            top: -5px !important;
+            cursor: grab;
+        }
+        .noUi-handle::before, .noUi-handle::after {
+            display: none !important;
+        }
+        
+        /* Image Hover Preview */
+        .preview-thumb {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .preview-thumb:hover {
+            transform: scale(3.5);
+            z-index: 100;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            border: 1px solid #00f0ff;
+        }
+        
+        /* Row Hover */
+        .intel-row {
+            transition: all 0.2s ease;
+        }
+        .intel-row:hover {
+            background-color: rgba(30, 30, 40, 0.8);
+            border-left: 2px solid #00f0ff;
+        }
+        
+        /* Status Badge Glow */
+        .status-open { color: #00ff41; text-shadow: 0 0 8px rgba(0, 255, 65, 0.4); }
+        .status-closed { color: #ff073a; text-shadow: 0 0 8px rgba(255, 7, 58, 0.4); }
+        .status-waitlist { color: #f0f000; text-shadow: 0 0 8px rgba(240, 240, 0, 0.4); }
+        
+        /* Type Badge */
+        .type-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.05em;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        /* Glitch Text Effect */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-1px, 1px); }
+            40% { transform: translate(1px, -1px); }
+            60% { transform: translate(-1px, -1px); }
+            80% { transform: translate(1px, 1px); }
+            100% { transform: translate(0); }
+        }
+        
+        /* Loading Bar Animation */
+        @keyframes load-bar {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body class="bg-dark-bg text-gray-300 font-mono text-xs min-h-screen scanlines grid-bg overflow-x-hidden">
+
+    <!-- HEADER -->
+    <header class="border-b border-gray-800 bg-black/80 backdrop-blur-sm sticky top-0 z-40">
+        <div class="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-neon-cyan pulse-dot"></div>
+                <h1 class="font-terminal text-2xl md:text-3xl text-white tracking-wider">
+                    FURSUIT_MAKER_DB<span class="text-neon-cyan">.exe</span>
+                </h1>
+                <span class="text-gray-600 text-[10px] hidden md:inline">v2.4.1 // OSINT_MONITOR</span>
+            </div>
+            <div class="flex items-center gap-4 text-[10px] text-gray-500">
+                <span id="clock" class="font-mono">00:00:00 UTC</span>
+                <span class="hidden sm:inline">|</span>
+                <span class="hidden sm:inline">CONN: <span class="text-neon-green">SECURE</span></span>
+                <span class="hidden sm:inline">|</span>
+                <span class="hidden sm:inline">LATENCY: <span class="text-neon-yellow">24ms</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1600px] mx-auto px-4 py-4 space-y-4">
+        
+        <!-- STATS BOARD -->
+        <section class="border border-gray-800 bg-panel-bg/50 backdrop-blur-sm rounded-sm p-4">
+            <div class="flex items-center justify-between mb-3 border-b border-gray-800 pb-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-neon-cyan font-terminal text-lg">[ RADAR_MODULE ]</span>
+                    <span class="text-gray-600 text-[10px]">LIVE_INTELLIGENCE_FEED</span>
+                </div>
+                <div class="flex items-center gap-2 text-[10px]">
+                    <span class="w-2 h-2 rounded-full bg-neon-green pulse-dot"></span>
+                    <span class="text-gray-400">SYSTEM ACTIVE</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- Stat 1 -->
+                <div class="border border-gray-800 bg-black/40 p-3 rounded-sm">
+                    <div class="text-gray-500 text-[10px] mb-1">TOTAL_MAKERS_MONITORED</div>
+                    <div class="text-2xl font-terminal text-white" id="stat-total">0</div>
+                    <div class="w-full h-1 bg-gray-800 mt-2 rounded-full overflow-hidden">
+                        <div class="h-full bg-neon-cyan" style="width: 100%"></div>
+                    </div>
+                </div>
+                
+                <!-- Stat 2 -->
+                <div class="border border-gray-800 bg-black/40 p-3 rounded-sm">
+                    <div class="text-gray-500 text-[10px] mb-1">AVG_FOLLOWERS</div>
+                    <div class="text-2xl font-terminal text-neon-yellow" id="stat-followers">0</div>
+                    <div class="w-full h-1 bg-gray-800 mt-2 rounded-full overflow-hidden">
+                        <div class="h-full bg-neon-yellow" style="width: 75%"></div>
+                    </div>
+                </div>
+                
+                <!-- Stat 3 -->
+                <div class="border border-gray-800 bg-black/40 p-3 rounded-sm">
+                    <div class="text-gray-500 text-[10px] mb-1">AVG_PRICE_RANGE</div>
+                    <div class="text-2xl font-terminal text-neon-green" id="stat-price">$0 - $0</div>
+                    <div class="w-full h-1 bg-gray-800 mt-2 rounded-full overflow-hidden">
+                        <div class="h-full bg-neon-green" style="width: 60%"></div>
+                    </div>
+                </div>
+                
+                <!-- Chart -->
+                <div class="border border-gray-800 bg-black/40 p-3 rounded-sm relative">
+                    <div class="text-gray-500 text-[10px] mb-1">STATUS_DISTRIBUTION</div>
+                    <div class="relative h-[60px]">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FILTER BAR -->
+        <section class="border border-gray-800 bg-panel-bg/50 backdrop-blur-sm rounded-sm p-4">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-neon-cyan font-terminal text-sm">[ FILTER_CONTROLS ]</span>
+                <span class="text-gray-600 text-[10px]">QUERY_PARAMETERS</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                <!-- Search -->
+                <div class="md:col-span-3">
+                    <label class="block text-gray-500 text-[10px] mb-1">MAKER_NAME_SEARCH</label>
+                    <div class="relative">
+                        <span class="absolute left-2 top-1/2 -translate-y-1/2 text-neon-cyan">&gt;</span>
+                        <input 
+                            type="text" 
+                            id="searchInput"
+                            placeholder="Search target..."
+                            class="w-full bg-black/60 border border-gray-700 rounded-sm py-2 pl-6 pr-3 text-xs font-mono text-white placeholder-gray-600 focus:outline-none focus:border-neon-cyan transition-colors"
+                        >
+                    </div>
+                </div>
+                
+                <!-- Status Filter -->
+                <div class="md:col-span-2">
+                    <label class="block text-gray-500 text-[10px] mb-1">STATUS_FILTER</label>
+                    <select id="statusFilter" class="w-full bg-black/60 border border-gray-700 rounded-sm py-2 px-3 text-xs font-mono text-white focus:outline-none focus:border-neon-cyan transition-colors cursor-pointer">
+                        <option value="all">[ ALL_STATUS ]</option>
+                        <option value="Open">OPEN</option>
+                        <option value="Closed">CLOSED</option>
+                        <option value="Waitlist">WAITLIST</option>
+                    </select>
+                </div>
+                
+                <!-- Type Filter -->
+                <div class="md:col-span-2">
+                    <label class="block text-gray-500 text-[10px] mb-1">TYPE_FILTER</label>
+                    <select id="typeFilter" class="w-full bg-black/60 border border-gray-700 rounded-sm py-2 px-3 text-xs font-mono text-white focus:outline-none focus:border-neon-cyan transition-colors cursor-pointer">
+                        <option value="all">[ ALL_TYPES ]</option>
+                        <option value="Fullsuit">FULLSUIT</option>
+                        <option value="Partial">PARTIAL</option>
+                        <option value="Paws">PAWS</option>
+                        <option value="Head">HEAD</option>
+                        <option value="Tail">TAIL</option>
+                    </select>
+                </div>
+                
+                <!-- Price Slider -->
+                <div class="md:col-span-4">
+                    <label class="block text-gray-500 text-[10px] mb-1">PRICE_RANGE_FILTER</label>
+                    <div class="px-2">
+                        <div id="priceSlider" class="mt-2"></div>
+                        <div class="flex justify-between mt-2 text-[10px] text-gray-400 font-mono">
+                            <span id="priceMinDisplay">$0</span>
+                            <span id="priceMaxDisplay">$10000</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reset -->
+                <div class="md:col-span-1">
+                    <button id="resetBtn" class="w-full border border-gray-700 hover:border-neon-red text-gray-400 hover:text-neon-red py-2 px-2 rounded-sm text-[10px] font-mono transition-all">
+                        [RESET]
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- DATA GRID -->
+        <section class="border border-gray-800 bg-panel-bg/30 backdrop-blur-sm rounded-sm overflow-hidden">
+            <!-- Grid Header -->
+            <div class="grid grid-cols-12 gap-2 px-4 py-2 bg-black/60 border-b border-gray-800 text-[10px] text-gray-500 font-mono uppercase tracking-wider">
+                <div class="col-span-1">Logo</div>
+                <div class="col-span-2">Maker / Socials</div>
+                <div class="col-span-1 text-center">Status</div>
+                <div class="col-span-2">Types</div>
+                <div class="col-span-2">Price Range</div>
+                <div class="col-span-1 text-right">Followers</div>
+                <div class="col-span-1 text-right">Comms</div>
+                <div class="col-span-2">Previews</div>
+            </div>
+            
+            <!-- Data Rows Container -->
+            <div id="dataGrid" class="divide-y divide-gray-800/50">
+                <!-- Rows injected by JS -->
+            </div>
+            
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden py-12 text-center">
+                <div class="text-neon-red font-terminal text-xl mb-2">[ NO_TARGETS_FOUND ]</div>
+                <div class="text-gray-600 text-xs">Adjust filter parameters and retry query.</div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="border-t border-gray-800 pt-2 pb-4 text-[10px] text-gray-600 flex justify-between">
+            <span>FURSUIT_MAKER_DB // CLASSIFICATION: PUBLIC_OSINT</span>
+            <span>Last Sync: <span id="lastSync">--</span></span>
+        </footer>
+    </main>
+
+    <script>
+        // ============================================
+        // DUMMY DATA
+        // ============================================
+        const makersData = [
+            {
+                id: 1,
+                name: "NebulaFursuits",
+                logo: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=100&h=100&fit=crop",
+                socials: { twitter: "@nebula_furs", website: "nebula.furs" },
+                previews: [
+                    "https://images.unsplash.com/photo-1560167016-022b78a0258e?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1585110396000-c9286742e32f?w=200&h=200&fit=crop"
+                ],
+                status: "Open",
+                types: ["Fullsuit", "Partial", "Paws"],
+                priceMin: 2500,
+                priceMax: 6500,
+                priceUpdatedAt: "2026-04-15",
+                followers: 15420,
+                commissionFinished: 87
+            },
+            {
+                id: 2,
+                name: "AetherWorks",
+                logo: "https://images.unsplash.com/photo-1633409361618-c73427e4e206?w=100&h=100&fit=crop",
+                socials: { twitter: "@aether_works", telegram: "aether_comm" },
+                previews: [
+                    "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=200&h=200&fit=crop"
+                ],
+                status: "Waitlist",
+                types: ["Fullsuit", "Head"],
+                priceMin: 4000,
+                priceMax: 9000,
+                priceUpdatedAt: "2026-03-20",
+                followers: 8930,
+                commissionFinished: 42
+            },
+            {
+                id: 3,
+                name: "CrimsonPawStudios",
+                logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=100&h=100&fit=crop",
+                socials: { twitter: "@crimson_paw", website: "crimsonpaw.studio" },
+                previews: [
+                    "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=200&h=200&fit=crop"
+                ],
+                status: "Closed",
+                types: ["Partial", "Paws", "Tail"],
+                priceMin: 1200,
+                priceMax: 3500,
+                priceUpdatedAt: "2026-05-01",
+                followers: 32100,
+                commissionFinished: 156
+            },
+            {
+                id: 4,
+                name: "VoidCraftFurs",
+                logo: "https://images.unsplash.com/photo-1635322966219-b75ed372eb01?w=100&h=100&fit=crop",
+                socials: { twitter: "@voidcraft", telegram: "void_group" },
+                previews: [
+                    "https://images.unsplash.com/photo-1529778873920-4da4926a7071?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1507146426996-ef05306b9955?w=200&h=200&fit=crop"
+                ],
+                status: "Open",
+                types: ["Fullsuit"],
+                priceMin: 5500,
+                priceMax: 12000,
+                priceUpdatedAt: "2026-04-28",
+                followers: 5670,
+                commissionFinished: 23
+            },
+            {
+                id: 5,
+                name: "StarlightAtelier",
+                logo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&h=100&fit=crop",
+                socials: { website: "starlight.atelier", twitter: "@starlight_a" },
+                previews: [
+                    "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=200&h=200&fit=crop"
+                ],
+                status: "Waitlist",
+                types: ["Fullsuit", "Partial", "Head", "Paws"],
+                priceMin: 3000,
+                priceMax: 7500,
+                priceUpdatedAt: "2026-04-10",
+                followers: 22150,
+                commissionFinished: 68
+            },
+            {
+                id: 6,
+                name: "DriftwoodCreatives",
+                logo: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=100&h=100&fit=crop",
+                socials: { twitter: "@driftwood_c", telegram: "drift_chat" },
+                previews: [
+                    "https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=200&h=200&fit=crop"
+                ],
+                status: "Open",
+                types: ["Partial", "Tail"],
+                priceMin: 1800,
+                priceMax: 4200,
+                priceUpdatedAt: "2026-05-03",
+                followers: 7840,
+                commissionFinished: 35
+            },
+            {
+                id: 7,
+                name: "LunarFurForge",
+                logo: "https://images.unsplash.com/photo-1614851099518-94f3f5b9a5e2?w=100&h=100&fit=crop",
+                socials: { website: "lunarforge.fur", twitter: "@lunar_forge" },
+                previews: [
+                    "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1585110396000-c9286742e32f?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=200&h=200&fit=crop"
+                ],
+                status: "Closed",
+                types: ["Fullsuit", "Head", "Paws"],
+                priceMin: 4500,
+                priceMax: 11000,
+                priceUpdatedAt: "2026-04-22",
+                followers: 18900,
+                commissionFinished: 94
+            },
+            {
+                id: 8,
+                name: "PhantomThreadWorks",
+                logo: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=100&h=100&fit=crop",
+                socials: { twitter: "@phantom_thread", telegram: "phantom_comm" },
+                previews: [
+                    "https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&h=200&fit=crop"
+                ],
+                status: "Open",
+                types: ["Head", "Paws"],
+                priceMin: 800,
+                priceMax: 2200,
+                priceUpdatedAt: "2026-05-05",
+                followers: 4560,
+                commissionFinished: 112
+            },
+            {
+                id: 9,
+                name: "SolarFlareSuits",
+                logo: "https://images.unsplash.com/photo-1614850715649-1d0106293bd1?w=100&h=100&fit=crop",
+                socials: { website: "solarflare.suits", twitter: "@solarflare_s" },
+                previews: [
+                    "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1529778873920-4da4926a7071?w=200&h=200&fit=crop"
+                ],
+                status: "Waitlist",
+                types: ["Fullsuit", "Partial"],
+                priceMin: 3500,
+                priceMax: 8000,
+                priceUpdatedAt: "2026-04-18",
+                followers: 27800,
+                commissionFinished: 51
+            },
+            {
+                id: 10,
+                name: "MossyPawCreations",
+                logo: "https://images.unsplash.com/photo-1614851099175-e5b30eb6f696?w=100&h=100&fit=crop",
+                socials: { twitter: "@mossy_paw", telegram: "mossy_group" },
+                previews: [
+                    "https://images.unsplash.com/photo-1507146426996-ef05306b9955?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&h=200&fit=crop"
+                ],
+                status: "Open",
+                types: ["Partial", "Paws", "Tail"],
+                priceMin: 1500,
+                priceMax: 3800,
+                priceUpdatedAt: "2026-05-02",
+                followers: 12300,
+                commissionFinished: 78
+            },
+            {
+                id: 11,
+                name: "EclipseFurDesigns",
+                logo: "https://images.unsplash.com/photo-1614850715649-1d0106293bd1?w=100&h=100&fit=crop",
+                socials: { website: "eclipse.fur", twitter: "@eclipse_fur" },
+                previews: [
+                    "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1535930749574-1399327ce78f?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1548802673-380ab8ebc7b7?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=200&h=200&fit=crop"
+                ],
+                status: "Closed",
+                types: ["Fullsuit", "Head"],
+                priceMin: 5000,
+                priceMax: 13000,
+                priceUpdatedAt: "2026-04-25",
+                followers: 34200,
+                commissionFinished: 203
+            },
+            {
+                id: 12,
+                name: "WhiskerWorksCo",
+                logo: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&h=100&fit=crop",
+                socials: { twitter: "@whisker_works", telegram: "whisker_chat" },
+                previews: [
+                    "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=200&h=200&fit=crop",
+                    "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&h=200&fit=crop"
+                ],
+                status: "Open",
+                types: ["Paws", "Tail"],
+                priceMin: 400,
+                priceMax: 1200,
+                priceUpdatedAt: "2026-05-04",
+                followers: 2890,
+                commissionFinished: 145
+            }
+        ];
+
+        // ============================================
+        // STATE & CONFIG
+        // ============================================
+        let filteredData = [...makersData];
+        let priceRange = [0, 15000];
+        
+        // ============================================
+        // UTILS
+        // ============================================
+        function formatNumber(num) {
+            return num.toLocaleString();
+        }
+        
+        function formatPrice(price) {
+            return '$' + price.toLocaleString();
+        }
+        
+        function getStatusColor(status) {
+            switch(status) {
+                case 'Open': return 'status-open';
+                case 'Closed': return 'status-closed';
+                case 'Waitlist': return 'status-waitlist';
+                default: return 'text-gray-400';
+            }
+        }
+        
+        function getStatusDotColor(status) {
+            switch(status) {
+                case 'Open': return 'bg-neon-green';
+                case 'Closed': return 'bg-neon-red';
+                case 'Waitlist': return 'bg-neon-yellow';
+                default: return 'bg-gray-500';
+            }
+        }
+        
+        function getTypeColor(type) {
+            const colors = {
+                'Fullsuit': 'border-neon-cyan text-neon-cyan',
+                'Partial': 'border-neon-green text-neon-green',
+                'Paws': 'border-neon-yellow text-neon-yellow',
+                'Head': 'border-purple-400 text-purple-400',
+                'Tail': 'border-pink-400 text-pink-400'
+            };
+            return colors[type] || 'border-gray-500 text-gray-500';
+        }
+
+        // ============================================
+        // STATS UPDATE
+        // ============================================
+        function updateStats() {
+            const total = filteredData.length;
+            const avgFollowers = total > 0 ? Math.round(filteredData.reduce((a, b) => a + b.followers, 0) / total) : 0;
+            const avgMin = total > 0 ? Math.round(filteredData.reduce((a, b) => a + b.priceMin, 0) / total) : 0;
+            const avgMax = total > 0 ? Math.round(filteredData.reduce((a, b) => a + b.priceMax, 0) / total) : 0;
+            
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-followers').textContent = formatNumber(avgFollowers);
+            document.getElementById('stat-price').textContent = `${formatPrice(avgMin)} - ${formatPrice(avgMax)}`;
+            
+            updateChart();
+        }
+
+        // ============================================
+        // CHART
+        // ============================================
+        let statusChart = null;
+        
+        function initChart() {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['OPEN', 'CLOSED', 'WAITLIST'],
+                    datasets: [{
+                        data: [0, 0, 0],
+                        backgroundColor: ['#00ff41', '#ff073a', '#f0f000'],
+                        borderColor: '#111118',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    cutout: '60%'
+                }
+            });
+        }
+        
+        function updateChart() {
+            if (!statusChart) return;
+            
+            const open = filteredData.filter(m => m.status === 'Open').length;
+            const closed = filteredData.filter(m => m.status === 'Closed').length;
+            const waitlist = filteredData.filter(m => m.status === 'Waitlist').length;
+            
+            statusChart.data.datasets[0].data = [open, closed, waitlist];
+            statusChart.update();
+        }
+
+        // ============================================
+        // RENDER DATA GRID
+        // ============================================
+        function renderGrid() {
+            const container = document.getElementById('dataGrid');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            
+            container.innerHTML = filteredData.map(maker => `
+                <div class="intel-row grid grid-cols-12 gap-2 px-4 py-3 items-center text-xs border-l-2 border-transparent">
+                    <!-- Logo -->
+                    <div class="col-span-1">
+                        <img src="${maker.logo}" alt="${maker.name}" 
+                             class="w-10 h-10 rounded-sm object-cover border border-gray-700"
+                             onerror="this.src='https://via.placeholder.com/40?text=NA'">
+                    </div>
+                    
+                    <!-- Name & Socials -->
+                    <div class="col-span-2 min-w-0">
+                        <div class="font-mono font-semibold text-white truncate">${maker.name}</div>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            ${maker.socials.twitter ? `<a href="https://twitter.com/${maker.socials.twitter.replace('@', '')}" target="_blank" class="text-[9px] text-neon-cyan hover:underline">${maker.socials.twitter}</a>` : ''}
+                            ${maker.socials.website ? `<span class="text-[9px] text-gray-500">${maker.socials.website}</span>` : ''}
+                            ${maker.socials.telegram ? `<span class="text-[9px] text-gray-500">${maker.socials.telegram}</span>` : ''}
+                        </div>
+                    </div>
+                    
+                    <!-- Status -->
+                    <div class="col-span-1 text-center">
+                        <div class="flex items-center justify-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full ${getStatusDotColor(maker.status)} pulse-dot"></span>
+                            <span class="font-mono text-[10px] ${getStatusColor(maker.status)}">${maker.status.toUpperCase()}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Types -->
+                    <div class="col-span-2">
+                        <div class="flex flex-wrap gap-1">
+                            ${maker.types.map(type => `
+                                <span class="type-badge px-1.5 py-0.5 rounded-sm ${getTypeColor(type)}">${type.toUpperCase()}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Price Range -->
+                    <div class="col-span-2 font-mono">
+                        <div class="text-white">${formatPrice(maker.priceMin)} - ${formatPrice(maker.priceMax)}</div>
+                        <div class="text-[9px] text-gray-600">UPD: ${maker.priceUpdatedAt}</div>
+                    </div>
+                    
+                    <!-- Followers -->
+                    <div class="col-span-1 text-right font-mono text-neon-cyan">
+                        ${formatNumber(maker.followers)}
+                    </div>
+                    
+                    <!-- Commissions -->
+                    <div class="col-span-1 text-right font-mono text-gray-400">
+                        ${maker.commissionFinished}
+                    </div>
+                    
+                    <!-- Previews -->
+                    <div class="col-span-2">
+                        <div class="flex gap-1">
+                            ${maker.previews.map((img, idx) => `
+                                <div class="relative">
+                                    <img src="${img}" alt="Preview ${idx + 1}" 
+                                         class="preview-thumb w-8 h-8 rounded-sm object-cover border border-gray-700 cursor-pointer"
+                                         onerror="this.src='https://via.placeholder.com/32?text=NA'">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // FILTERING
+        // ============================================
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            
+            filteredData = makersData.filter(maker => {
+                const matchSearch = maker.name.toLowerCase().includes(search) ||
+                                   (maker.socials.twitter && maker.socials.twitter.toLowerCase().includes(search));
+                const matchStatus = status === 'all' || maker.status === status;
+                const matchType = type === 'all' || maker.types.includes(type);
+                const matchPrice = maker.priceMin >= priceRange[0] && maker.priceMax <= priceRange[1];
+                
+                return matchSearch && matchStatus && matchType && matchPrice;
+            });
+            
+            updateStats();
+            renderGrid();
+        }
+
+        // ============================================
+        // SLIDER INIT
+        // ============================================
+        function initSlider() {
+            const slider = document.getElementById('priceSlider');
+            
+            noUiSlider.create(slider, {
+                start: [0, 15000],
+                connect: true,
+                range: {
+                    'min': 0,
+                    'max': 15000
+                },
+                step: 100,
+                format: {
+                    to: function(value) {
+                        return Math.round(value);
+                    },
+                    from: function(value) {
+                        return Number(value);
+                    }
+                }
+            });
+            
+            slider.noUiSlider.on('update', function(values) {
+                priceRange = values.map(v => Number(v));
+                document.getElementById('priceMinDisplay').textContent = '$' + priceRange[0].toLocaleString();
+                document.getElementById('priceMaxDisplay').textContent = '$' + priceRange[1].toLocaleString();
+            });
+            
+            slider.noUiSlider.on('change', function() {
+                applyFilters();
+            });
+        }
+
+        // ============================================
+        // CLOCK
+        // ============================================
+        function updateClock() {
+            const now = new Date();
+            const utc = now.toISOString().split('T')[1].split('.')[0];
+            document.getElementById('clock').textContent = utc + ' UTC';
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('typeFilter').addEventListener('change', applyFilters);
+        
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('typeFilter').value = 'all';
+            document.getElementById('priceSlider').noUiSlider.set([0, 15000]);
+            applyFilters();
+        });
+
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            initSlider();
+            initChart();
+            updateStats();
+            renderGrid();
+            updateClock();
+            setInterval(updateClock, 1000);
+            
+            document.getElementById('lastSync').textContent = new Date().toISOString().replace('T', ' ').split('.')[0];
+        });
+    </script>
+</body>
+</html>"""
+
+# Save the file
+output_path = "/mnt/agents/output/fursuit_maker_database.html"
+with open(output_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print(f"File saved to: {output_path}")
+print(f"File size: {len(html_content)} characters")
