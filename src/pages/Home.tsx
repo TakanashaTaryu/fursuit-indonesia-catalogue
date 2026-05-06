@@ -436,10 +436,10 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-sm font-bold text-gray-100 tracking-wider uppercase">
-                DATASET FURSUIT MAKER INDO
+                DATASET FURSUIT MAKER INDONESIA
               </h1>
               <p className="text-[10px] text-gray-500 font-mono">
-                BY TATSUYA RYU // PUBLIC VERSION
+                BY TATSUYA RYU - WITH UWU + AI
               </p>
             </div>
           </div>
