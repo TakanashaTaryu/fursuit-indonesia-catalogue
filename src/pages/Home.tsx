@@ -743,7 +743,7 @@ export default function Home() {
                       ))}
                     </div>
                     <div className="text-[10px] text-gray-600 font-mono mt-1">
-                      Last Update: {maker.priceUpdatedAt}
+                      Last Update: {maker.priceUpdatedAt.split('T')[0]}
                     </div>
                   </div>
 
