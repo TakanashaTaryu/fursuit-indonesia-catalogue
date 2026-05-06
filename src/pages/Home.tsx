@@ -49,9 +49,9 @@ const statusTranslation: Record<string, string> = {
 
 function formatCurrency(n: number) {
   if (n >= 1000) {
-    return 'Rp ' + (n / 1000).toLocaleString('id-ID') + ' K';
+    return 'Rp ' + Math.round(n / 1000).toLocaleString('id-ID') + ' K';
   }
-  return 'Rp ' + n.toLocaleString('id-ID');
+  return 'Rp ' + Math.round(n).toLocaleString('id-ID');
 }
 
 function gaussianKernel(x: number) {
