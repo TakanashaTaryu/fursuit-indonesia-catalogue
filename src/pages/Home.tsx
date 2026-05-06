@@ -16,6 +16,7 @@ import type { API as NoUiSliderAPI } from 'nouislider';
 import 'nouislider/dist/nouislider.css';
 import Papa from 'papaparse';
 import { makers, type FursuitMaker } from '../data/makers';
+import iconWhite from '../assets/icon-white.png';
 
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip, Legend, CategoryScale, LinearScale);
 
@@ -431,8 +432,8 @@ export default function Home() {
       <header className="border-b border-gray-800 bg-[#080808]/90 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded bg-green-500/10 border border-green-500/30 flex items-center justify-center">
-              <span className="text-green-400 text-sm">◈</span>
+            <div className="w-8 h-8 flex items-center justify-center">
+              <img src={iconWhite} alt="Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="text-sm font-bold text-gray-100 tracking-wider uppercase">
