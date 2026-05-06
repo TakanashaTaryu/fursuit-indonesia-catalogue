@@ -78,7 +78,7 @@ export default function Home() {
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [typeFilter, setTypeFilter] = useState<string>('All');
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: 'name', direction: 'asc' });
-  const [hoveredImage, setHoveredImage] = useState<string | null>(null);
+  const [hoveredImage, setHoveredImage] = useState<{ src: string; index: number } | null>(null);
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 });
   const [showAnalytics, setShowAnalytics] = useState(true);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -389,8 +389,8 @@ export default function Home() {
     };
   }, [filteredMakers]);
 
-  const handleImageHover = useCallback((e: React.MouseEvent, src: string) => {
-    setHoveredImage(src);
+  const handleImageHover = useCallback((e: React.MouseEvent, src: string, index: number) => {
+    setHoveredImage({ src, index });
     setHoverPos({ x: e.clientX, y: e.clientY });
   }, []);
 
@@ -672,33 +672,33 @@ export default function Home() {
           {/* Table Header */}
           <div className="hidden lg:grid grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-px bg-gray-800 border-b border-gray-800">
             <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Logo</div>
-            <div 
+            <div
               className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
               onClick={() => handleSort('name')}
             >
               FURSUIT MAKER / Sosial{renderSortIcon('name')}
             </div>
             <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Pratinjau</div>
-            <div 
+            <div
               className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
               onClick={() => handleSort('status')}
             >
               Status{renderSortIcon('status')}
             </div>
             <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Tipe</div>
-            <div 
+            <div
               className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
               onClick={() => handleSort('price')}
             >
               Rentang Harga{renderSortIcon('price')}
             </div>
-            <div 
+            <div
               className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
               onClick={() => handleSort('followers')}
             >
               Followers{renderSortIcon('followers')}
             </div>
-            <div 
+            <div
               className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
               onClick={() => handleSort('commissions')}
             >
@@ -755,7 +755,7 @@ export default function Home() {
                         <div
                           key={i}
                           className="relative w-10 h-10 rounded-sm overflow-hidden border border-gray-700 cursor-pointer preview-thumbnail flex-shrink-0"
-                          onMouseEnter={(e) => handleImageHover(e, p)}
+                          onMouseEnter={(e) => handleImageHover(e, p, i)}
                           onMouseMove={handleImageMove}
                           onMouseLeave={handleImageLeave}
                         >
@@ -844,12 +844,12 @@ export default function Home() {
         >
           <div className="bg-[#0a0a0a] border border-green-500/30 rounded-sm overflow-hidden shadow-2xl shadow-black/80">
             <img
-              src={hoveredImage}
+              src={hoveredImage.src}
               alt="Preview"
               className="w-80 h-80 object-cover"
             />
             <div className="px-2 py-1 bg-[#080808] border-t border-gray-800">
-              <span className="text-[10px] font-mono text-gray-500">PRATINJAU_GBR_{hoveredImage.split('/').pop()?.split('.')[0]?.toUpperCase()}</span>
+              <span className="text-[10px] font-mono text-gray-500">PRATINJAU {hoveredImage.index + 1}</span>
             </div>
           </div>
         </div>
@@ -859,10 +859,10 @@ export default function Home() {
       <footer className="border-t border-gray-800 bg-[#080808] mt-8">
         <div className="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between">
           <span className="text-[10px] font-mono text-gray-600">
-            BY TATSUYA RYU - MADE WITH UWU + AI
+            Inspired By <a href="https://skipasnow.github.io/fursuit/">skipasnow.github.io/fursuit/</a>
           </span>
           <span className="text-[10px] font-mono text-gray-600">
-            Inspired By <a href="https://skipasnow.github.io/fursuit/">skipasnow.github.io/fursuit/</a>
+            This website only provide the price range they put on their website/social media, for exact price contact the maker directly.
           </span>
         </div>
       </footer>
