@@ -77,7 +77,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [typeFilter, setTypeFilter] = useState<string>('All');
-  const [sortBy, setSortBy] = useState<string>('name');
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' }>({ key: 'name', direction: 'asc' });
   const [hoveredImage, setHoveredImage] = useState<string | null>(null);
   const [hoverPos, setHoverPos] = useState({ x: 0, y: 0 });
   const [showAnalytics, setShowAnalytics] = useState(true);
@@ -180,18 +180,31 @@ export default function Home() {
 
     // Sort
     result.sort((a, b) => {
-      switch (sortBy) {
-        case 'name': return a.name.localeCompare(b.name);
-        case 'price-low': return a.priceMin - b.priceMin;
-        case 'price-high': return b.priceMax - a.priceMax;
-        case 'followers': return b.followers - a.followers;
-        case 'commissions': return b.commissionsFinished - a.commissionsFinished;
-        default: return 0;
+      let comparison = 0;
+      switch (sortConfig.key) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name);
+          break;
+        case 'price':
+          comparison = ((a.priceMin + a.priceMax) / 2) - ((b.priceMin + b.priceMax) / 2);
+          break;
+        case 'followers':
+          comparison = a.followers - b.followers;
+          break;
+        case 'commissions':
+          comparison = a.commissionsFinished - b.commissionsFinished;
+          break;
+        case 'status':
+          comparison = a.status.localeCompare(b.status);
+          break;
+        default:
+          comparison = 0;
       }
+      return sortConfig.direction === 'asc' ? comparison : -comparison;
     });
 
     setFilteredMakers(result);
-  }, [searchQuery, statusFilter, typeFilter, priceRange, sortBy, dataMakers]);
+  }, [searchQuery, statusFilter, typeFilter, priceRange, sortConfig, dataMakers]);
 
   // Stats
   const stats = useMemo(() => {
@@ -394,6 +407,21 @@ export default function Home() {
     makers.forEach((m) => m.types.forEach((t) => types.add(t)));
     return ['All', ...Array.from(types)];
   }, []);
+
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const renderSortIcon = (key: string) => {
+    if (sortConfig.key !== key) {
+      return <span className="ml-1 text-gray-600 opacity-50 group-hover:opacity-100 transition-opacity">↕</span>;
+    }
+    return <span className="ml-1 text-green-400 font-bold">{sortConfig.direction === 'asc' ? '↑' : '↓'}</span>;
+  };
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-gray-300 grid-bg overflow-x-hidden">
@@ -607,15 +635,23 @@ export default function Home() {
             <div>
               <label className="text-[10px] text-gray-500 font-mono uppercase block mb-1.5">Urutkan Berdasarkan</label>
               <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                value={`${sortConfig.key}-${sortConfig.direction}`}
+                onChange={(e) => {
+                  const [key, direction] = e.target.value.split('-');
+                  setSortConfig({ key, direction: direction as 'asc' | 'desc' });
+                }}
                 className="w-full bg-[#0f0f0f] border border-gray-700 rounded-sm px-3 py-1.5 text-xs font-mono text-gray-300 focus:outline-none focus:border-green-500/50 focus:ring-1 focus:ring-green-500/20 transition-all appearance-none cursor-pointer"
               >
-                <option value="name">Nama</option>
-                <option value="price-low">Harga: Rendah ke Tinggi</option>
-                <option value="price-high">Harga: Tinggi ke Rendah</option>
-                <option value="followers">Followers</option>
-                <option value="commissions">Komisi</option>
+                <option value="name-asc">Nama (A-Z)</option>
+                <option value="name-desc">Nama (Z-A)</option>
+                <option value="price-asc">Harga: Rendah ke Tinggi</option>
+                <option value="price-desc">Harga: Tinggi ke Rendah</option>
+                <option value="followers-desc">Followers (Banyak ke Sedikit)</option>
+                <option value="followers-asc">Followers (Sedikit ke Banyak)</option>
+                <option value="commissions-desc">Komisi Selesai (Banyak ke Sedikit)</option>
+                <option value="commissions-asc">Komisi Selesai (Sedikit ke Banyak)</option>
+                <option value="status-asc">Status (A-Z)</option>
+                <option value="status-desc">Status (Z-A)</option>
               </select>
             </div>
 
@@ -636,13 +672,38 @@ export default function Home() {
           {/* Table Header */}
           <div className="hidden lg:grid grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-px bg-gray-800 border-b border-gray-800">
             <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Logo</div>
-            <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">FURSUIT MAKER / Sosial</div>
+            <div 
+              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+              onClick={() => handleSort('name')}
+            >
+              FURSUIT MAKER / Sosial{renderSortIcon('name')}
+            </div>
             <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Pratinjau</div>
-            <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Status</div>
+            <div 
+              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+              onClick={() => handleSort('status')}
+            >
+              Status{renderSortIcon('status')}
+            </div>
             <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Tipe</div>
-            <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Rentang Harga</div>
-            <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Followers</div>
-            <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Selesai</div>
+            <div 
+              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+              onClick={() => handleSort('price')}
+            >
+              Rentang Harga{renderSortIcon('price')}
+            </div>
+            <div 
+              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+              onClick={() => handleSort('followers')}
+            >
+              Followers{renderSortIcon('followers')}
+            </div>
+            <div 
+              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+              onClick={() => handleSort('commissions')}
+            >
+              Selesai{renderSortIcon('commissions')}
+            </div>
           </div>
 
           {/* Table Rows */}
