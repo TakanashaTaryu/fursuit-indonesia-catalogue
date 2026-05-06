@@ -44,7 +44,7 @@
     min-height: 100vh;
   }
 
-  a, a *, button, button *, select, select *, input[type="submit"], input[type="button"], input[type="checkbox"], input[type="radio"], [role="button"], [role="button"] *, .cursor-pointer, .cursor-pointer * {
+  a, a *, button, button *, select, select *, option, option *, optgroup, optgroup *, input[type="submit"], input[type="button"], input[type="checkbox"], input[type="radio"], [role="button"], [role="button"] *, .cursor-pointer, .cursor-pointer * {
     cursor: url('./assets/inteact.png'), pointer !important;
   }
 
