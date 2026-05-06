@@ -670,8 +670,10 @@ export default function Home() {
           </div>
 
           {/* Table Header */}
-          <div className="hidden lg:grid grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-px bg-gray-800 border-b border-gray-800">
-            <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Logo</div>
+          <div className="overflow-x-auto w-full custom-scrollbar pb-2">
+            <div className="min-w-[1000px] flex flex-col">
+              <div className="grid grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-px bg-gray-800 border-b border-gray-800">
+                <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Logo</div>
             <div
               className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
               onClick={() => handleSort('name')}
@@ -713,10 +715,10 @@ export default function Home() {
               return (
                 <div
                   key={maker.id}
-                  className="group relative hover:z-50 grid grid-cols-1 lg:grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-3 lg:gap-px bg-[#0a0a0a] hover:bg-[#0f1115] transition-colors duration-150 px-4 lg:px-0 py-3 lg:py-0 items-center"
+                  className="group relative hover:z-50 grid grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-px bg-[#0a0a0a] hover:bg-[#0f1115] transition-colors duration-150 items-center"
                 >
                   {/* Logo */}
-                  <div className="lg:bg-[#0a0a0a] lg:px-3 lg:py-2 flex items-center justify-center">
+                  <div className="bg-[#0a0a0a] px-3 py-2 flex items-center justify-center">
                     <img
                       src={maker.logo}
                       alt={maker.name}
@@ -725,7 +727,7 @@ export default function Home() {
                   </div>
 
                   {/* Name & Socials */}
-                  <div className="lg:bg-[#0a0a0a] lg:px-3 lg:py-2">
+                  <div className="bg-[#0a0a0a] px-3 py-2">
                     <div className="text-sm font-mono text-gray-200 group-hover:text-white transition-colors">
                       {maker.name}
                     </div>
@@ -748,8 +750,7 @@ export default function Home() {
                   </div>
 
                   {/* Previews */}
-                  <div className="lg:bg-[#0a0a0a] lg:px-3 lg:py-2 flex lg:block items-center gap-2">
-                    <span className="text-[10px] text-gray-500 font-mono uppercase lg:hidden block mb-2">Pratinjau:</span>
+                  <div className="bg-[#0a0a0a] px-3 py-2">
                     <div className="flex gap-1 flex-wrap max-h-[104px] overflow-y-auto pr-1 custom-scrollbar">
                       {maker.previews.map((p, i) => (
                         <div
@@ -766,8 +767,7 @@ export default function Home() {
                   </div>
 
                   {/* Status */}
-                  <div className="lg:bg-[#0a0a0a] lg:px-3 lg:py-2 flex lg:block items-center gap-2">
-                    <span className="text-[10px] text-gray-500 font-mono uppercase lg:hidden">Status:</span>
+                  <div className="bg-[#0a0a0a] px-3 py-2">
                     <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-sm ${sc.bg}`}>
                       <span className={`w-2 h-2 rounded-full ${sc.dot} ${sc.pulse}`} />
                       <span className={`text-xs font-mono ${sc.text}`}>{statusTranslation[maker.status]}</span>
@@ -775,8 +775,7 @@ export default function Home() {
                   </div>
 
                   {/* Types */}
-                  <div className="lg:bg-[#0a0a0a] lg:px-3 lg:py-2 flex lg:block items-center gap-2 flex-wrap">
-                    <span className="text-[10px] text-gray-500 font-mono uppercase lg:hidden">Tipe:</span>
+                  <div className="bg-[#0a0a0a] px-3 py-2">
                     <div className="flex flex-wrap gap-1">
                       {maker.types.map((t) => (
                         <span
@@ -790,8 +789,7 @@ export default function Home() {
                   </div>
 
                   {/* Price Range */}
-                  <div className="lg:bg-[#0a0a0a] lg:px-3 lg:py-2 flex lg:block items-center gap-2">
-                    <span className="text-[10px] text-gray-500 font-mono uppercase lg:hidden">Harga:</span>
+                  <div className="bg-[#0a0a0a] px-3 py-2">
                     <div className="font-mono text-xs">
                       {maker.priceMin === 0 && maker.priceMax === 0 ? (
                         <span className="text-gray-500">Unknown</span>
@@ -806,14 +804,12 @@ export default function Home() {
                   </div>
 
                   {/* Followers */}
-                  <div className="lg:bg-[#0a0a0a] lg:px-3 lg:py-2 flex lg:block items-center gap-2">
-                    <span className="text-[10px] text-gray-500 font-mono uppercase lg:hidden">Followers:</span>
+                  <div className="bg-[#0a0a0a] px-3 py-2">
                     <span className="font-mono text-xs text-purple-400">{formatNumber(maker.followers)}</span>
                   </div>
 
                   {/* Commissions */}
-                  <div className="lg:bg-[#0a0a0a] lg:px-3 lg:py-2 flex lg:block items-center gap-2">
-                    <span className="text-[10px] text-gray-500 font-mono uppercase lg:hidden">Selesai:</span>
+                  <div className="bg-[#0a0a0a] px-3 py-2">
                     <span className="font-mono text-xs text-yellow-400">{maker.commissionsFinished}</span>
                   </div>
 
@@ -821,6 +817,8 @@ export default function Home() {
                 </div>
               );
             })}
+              </div>
+            </div>
           </div>
 
           {filteredMakers.length === 0 && (
