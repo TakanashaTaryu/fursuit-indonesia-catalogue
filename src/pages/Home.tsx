@@ -576,11 +576,33 @@ export default function Home() {
               Rentang Harga
             </label>
             <div className="flex flex-col md:flex-row items-center gap-6 mb-2">
-              <div className="w-full md:w-1/3">
+              <div className="w-full md:w-1/4">
                 <div ref={sliderRef} className="mx-2" />
               </div>
-              <div className="text-lg lg:text-2xl font-mono text-green-400 tracking-tighter mt-4 md:mt-0">
+              <div className="text-lg lg:text-2xl font-mono text-green-400 tracking-tighter mt-4 md:mt-0 shrink-0">
                 {formatCurrency(priceRange[0])} <span className="text-gray-600 mx-2">-</span> {formatCurrency(priceRange[1])}
+              </div>
+
+              {/* Call to action */}
+              <div className="md:ml-auto flex flex-col items-center md:items-end w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t border-gray-800 md:border-t-0">
+                <div className="text-[10px] text-gray-400 font-mono mb-2 text-center md:text-right">
+                  Apakah Kamu Maker Fursuit? Hubungi developer kami untuk<br className="hidden md:block" />
+                  menambahkan katalog Anda ke web ini:
+                </div>
+                <div className="flex items-center gap-2">
+                  <a href="https://x.com/AxyenTheDutchie" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0a0a0a] border border-gray-700 hover:border-white hover:bg-[#111] rounded-sm transition-all group">
+                    <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-white transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" /></svg>
+                    <span className="text-[10px] font-mono text-gray-400 group-hover:text-white transition-colors hidden sm:inline">Twitter</span>
+                  </a>
+                  <a href="https://t.me/AxyenDutchie" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0a0a0a] border border-gray-700 hover:border-[#229ED9] hover:bg-[#111] rounded-sm transition-all group">
+                    <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#229ED9] transition-colors" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" /></svg>
+                    <span className="text-[10px] font-mono text-gray-400 group-hover:text-[#229ED9] transition-colors hidden sm:inline">Telegram</span>
+                  </a>
+                  <a href="https://discordapp.com/users/865591175943684097" target="_blank" rel="noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0a0a0a] border border-gray-700 hover:border-[#5865F2] hover:bg-[#111] rounded-sm transition-all group">
+                    <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#5865F2] transition-colors" fill="currentColor" viewBox="0 0 127.14 96.36"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77.13,77.13,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.31,60,73.31,53s5-12.74,11.43-12.74S96.1,46,96,53,91,65.69,84.69,65.69Z" /></svg>
+                    <span className="text-[10px] font-mono text-gray-400 group-hover:text-[#5865F2] transition-colors hidden sm:inline">Discord</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>
@@ -674,149 +696,149 @@ export default function Home() {
             <div className="min-w-[1000px] flex flex-col">
               <div className="grid grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-px bg-gray-800 border-b border-gray-800">
                 <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Logo</div>
-            <div
-              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
-              onClick={() => handleSort('name')}
-            >
-              FURSUIT MAKER / Sosial{renderSortIcon('name')}
-            </div>
-            <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Pratinjau</div>
-            <div
-              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
-              onClick={() => handleSort('status')}
-            >
-              Status{renderSortIcon('status')}
-            </div>
-            <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Tipe</div>
-            <div
-              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
-              onClick={() => handleSort('price')}
-            >
-              Rentang Harga{renderSortIcon('price')}
-            </div>
-            <div
-              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
-              onClick={() => handleSort('followers')}
-            >
-              Followers{renderSortIcon('followers')}
-            </div>
-            <div
-              className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
-              onClick={() => handleSort('commissions')}
-            >
-              Selesai{renderSortIcon('commissions')}
-            </div>
-          </div>
-
-          {/* Table Rows */}
-          <div className="divide-y divide-gray-800">
-            {filteredMakers.map((maker) => {
-              const sc = statusColors[maker.status];
-              return (
                 <div
-                  key={maker.id}
-                  className="group relative hover:z-50 grid grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-px bg-[#0a0a0a] hover:bg-[#0f1115] transition-colors duration-150 items-center"
+                  className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+                  onClick={() => handleSort('name')}
                 >
-                  {/* Logo */}
-                  <div className="bg-[#0a0a0a] px-3 py-2 flex items-center justify-center">
-                    <img
-                      src={maker.logo}
-                      alt={maker.name}
-                      className="w-10 h-10 rounded-sm object-cover border border-gray-700 transition-all duration-200 hover:scale-[3] hover:z-50 relative hover:border-green-400 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
-                    />
-                  </div>
-
-                  {/* Name & Socials */}
-                  <div className="bg-[#0a0a0a] px-3 py-2">
-                    <div className="text-sm font-mono text-gray-200 group-hover:text-white transition-colors">
-                      {maker.name}
-                    </div>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {maker.socials.map((s) => (
-                        <a
-                          key={s.platform}
-                          href={s.url}
-                          className="text-[10px] font-mono text-gray-500 hover:text-green-400 transition-colors inline-flex items-center gap-1"
-                          title={`${s.platform}: ${s.handle}`}
-                        >
-                          <span>{platformIcons[s.platform] || '●'}</span>
-                          <span className="hidden sm:inline">{s.handle}</span>
-                        </a>
-                      ))}
-                    </div>
-                    <div className="text-[10px] text-gray-600 font-mono mt-1">
-                      Last Update: {maker.priceUpdatedAt.split('T')[0]}
-                    </div>
-                  </div>
-
-                  {/* Previews */}
-                  <div className="bg-[#0a0a0a] px-3 py-2">
-                    <div className="flex gap-1 flex-wrap max-h-[104px] overflow-y-auto pr-1 custom-scrollbar">
-                      {maker.previews.map((p, i) => (
-                        <div
-                          key={i}
-                          className="relative w-10 h-10 rounded-sm overflow-hidden border border-gray-700 cursor-pointer preview-thumbnail flex-shrink-0"
-                          onMouseEnter={(e) => handleImageHover(e, p, i)}
-                          onMouseMove={handleImageMove}
-                          onMouseLeave={handleImageLeave}
-                        >
-                          <img src={p} alt={`Pratinjau ${i + 1}`} className="w-full h-full object-cover" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Status */}
-                  <div className="bg-[#0a0a0a] px-3 py-2">
-                    <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-sm ${sc.bg}`}>
-                      <span className={`w-2 h-2 rounded-full ${sc.dot} ${sc.pulse}`} />
-                      <span className={`text-xs font-mono ${sc.text}`}>{statusTranslation[maker.status]}</span>
-                    </div>
-                  </div>
-
-                  {/* Types */}
-                  <div className="bg-[#0a0a0a] px-3 py-2">
-                    <div className="flex flex-wrap gap-1">
-                      {maker.types.map((t) => (
-                        <span
-                          key={t}
-                          className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm border ${typeColors[t] || 'bg-gray-500/10 text-gray-400 border-gray-500/20'}`}
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Price Range */}
-                  <div className="bg-[#0a0a0a] px-3 py-2">
-                    <div className="font-mono text-xs">
-                      {maker.priceMin === 0 && maker.priceMax === 0 ? (
-                        <span className="text-gray-500">Unknown</span>
-                      ) : (
-                        <>
-                          <span className="text-green-400">{maker.priceMin === 0 ? 'Unknown' : formatCurrency(maker.priceMin)}</span>
-                          <span className="text-gray-600 mx-1">-</span>
-                          <span className="text-green-400">{maker.priceMax === 0 ? 'Unknown' : formatCurrency(maker.priceMax)}</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Followers */}
-                  <div className="bg-[#0a0a0a] px-3 py-2">
-                    <span className="font-mono text-xs text-purple-400">{formatNumber(maker.followers)}</span>
-                  </div>
-
-                  {/* Commissions */}
-                  <div className="bg-[#0a0a0a] px-3 py-2">
-                    <span className="font-mono text-xs text-yellow-400">{maker.commissionsFinished}</span>
-                  </div>
-
-
+                  FURSUIT MAKER / Sosial{renderSortIcon('name')}
                 </div>
-              );
-            })}
+                <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Pratinjau</div>
+                <div
+                  className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+                  onClick={() => handleSort('status')}
+                >
+                  Status{renderSortIcon('status')}
+                </div>
+                <div className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase">Tipe</div>
+                <div
+                  className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+                  onClick={() => handleSort('price')}
+                >
+                  Rentang Harga{renderSortIcon('price')}
+                </div>
+                <div
+                  className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+                  onClick={() => handleSort('followers')}
+                >
+                  Followers{renderSortIcon('followers')}
+                </div>
+                <div
+                  className="bg-[#080808] px-3 py-2 text-[10px] font-mono text-gray-500 uppercase cursor-pointer hover:bg-[#111] select-none group"
+                  onClick={() => handleSort('commissions')}
+                >
+                  Selesai{renderSortIcon('commissions')}
+                </div>
+              </div>
+
+              {/* Table Rows */}
+              <div className="divide-y divide-gray-800">
+                {filteredMakers.map((maker) => {
+                  const sc = statusColors[maker.status];
+                  return (
+                    <div
+                      key={maker.id}
+                      className="group relative hover:z-50 grid grid-cols-[60px_2.5fr_2fr_1.5fr_2fr_1.5fr_1fr_1fr] gap-px bg-[#0a0a0a] hover:bg-[#0f1115] transition-colors duration-150 items-center"
+                    >
+                      {/* Logo */}
+                      <div className="bg-[#0a0a0a] px-3 py-2 flex items-center justify-center">
+                        <img
+                          src={maker.logo}
+                          alt={maker.name}
+                          className="w-10 h-10 rounded-sm object-cover border border-gray-700 transition-all duration-200 hover:scale-[3] hover:z-50 relative hover:border-green-400 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+                        />
+                      </div>
+
+                      {/* Name & Socials */}
+                      <div className="bg-[#0a0a0a] px-3 py-2">
+                        <div className="text-sm font-mono text-gray-200 group-hover:text-white transition-colors">
+                          {maker.name}
+                        </div>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {maker.socials.map((s) => (
+                            <a
+                              key={s.platform}
+                              href={s.url}
+                              className="text-[10px] font-mono text-gray-500 hover:text-green-400 transition-colors inline-flex items-center gap-1"
+                              title={`${s.platform}: ${s.handle}`}
+                            >
+                              <span>{platformIcons[s.platform] || '●'}</span>
+                              <span className="hidden sm:inline">{s.handle}</span>
+                            </a>
+                          ))}
+                        </div>
+                        <div className="text-[10px] text-gray-600 font-mono mt-1">
+                          Last Update: {maker.priceUpdatedAt.split('T')[0]}
+                        </div>
+                      </div>
+
+                      {/* Previews */}
+                      <div className="bg-[#0a0a0a] px-3 py-2">
+                        <div className="flex gap-1 flex-wrap max-h-[104px] overflow-y-auto pr-1 custom-scrollbar">
+                          {maker.previews.map((p, i) => (
+                            <div
+                              key={i}
+                              className="relative w-10 h-10 rounded-sm overflow-hidden border border-gray-700 cursor-pointer preview-thumbnail flex-shrink-0"
+                              onMouseEnter={(e) => handleImageHover(e, p, i)}
+                              onMouseMove={handleImageMove}
+                              onMouseLeave={handleImageLeave}
+                            >
+                              <img src={p} alt={`Pratinjau ${i + 1}`} className="w-full h-full object-cover" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Status */}
+                      <div className="bg-[#0a0a0a] px-3 py-2">
+                        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-sm ${sc.bg}`}>
+                          <span className={`w-2 h-2 rounded-full ${sc.dot} ${sc.pulse}`} />
+                          <span className={`text-xs font-mono ${sc.text}`}>{statusTranslation[maker.status]}</span>
+                        </div>
+                      </div>
+
+                      {/* Types */}
+                      <div className="bg-[#0a0a0a] px-3 py-2">
+                        <div className="flex flex-wrap gap-1">
+                          {maker.types.map((t) => (
+                            <span
+                              key={t}
+                              className={`text-[10px] font-mono px-1.5 py-0.5 rounded-sm border ${typeColors[t] || 'bg-gray-500/10 text-gray-400 border-gray-500/20'}`}
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Price Range */}
+                      <div className="bg-[#0a0a0a] px-3 py-2">
+                        <div className="font-mono text-xs">
+                          {maker.priceMin === 0 && maker.priceMax === 0 ? (
+                            <span className="text-gray-500">Unknown</span>
+                          ) : (
+                            <>
+                              <span className="text-green-400">{maker.priceMin === 0 ? 'Unknown' : formatCurrency(maker.priceMin)}</span>
+                              <span className="text-gray-600 mx-1">-</span>
+                              <span className="text-green-400">{maker.priceMax === 0 ? 'Unknown' : formatCurrency(maker.priceMax)}</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Followers */}
+                      <div className="bg-[#0a0a0a] px-3 py-2">
+                        <span className="font-mono text-xs text-purple-400">{formatNumber(maker.followers)}</span>
+                      </div>
+
+                      {/* Commissions */}
+                      <div className="bg-[#0a0a0a] px-3 py-2">
+                        <span className="font-mono text-xs text-yellow-400">{maker.commissionsFinished}</span>
+                      </div>
+
+
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
