@@ -879,10 +879,10 @@ export default function Home() {
       <footer className="border-t border-gray-800 bg-[#080808] mt-8">
         <div className="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between">
           <span className="text-[10px] font-mono text-gray-600">
-            Inspired By <a href="https://skipasnow.github.io/fursuit/">skipasnow.github.io/fursuit/</a>
+            Terinspirasi dari <a href="https://skipasnow.github.io/fursuit/">skipasnow.github.io/fursuit/</a>
           </span>
           <span className="text-[10px] font-mono text-gray-600">
-            This website only provide the price range they put on their website/social media, for exact price contact the maker directly.
+            Website ini hanya menampilkan kisaran harga. Untuk harga pasti, hubungi maker secara langsung.
           </span>
         </div>
       </footer>
